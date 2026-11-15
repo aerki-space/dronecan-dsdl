@@ -5,6 +5,8 @@ One source of truth, validated against the full DroneCAN ecosystem on every comm
 
 [![DSDL checks](https://github.com/aerki-space/dronecan-dsdl/actions/workflows/ci.yml/badge.svg)](https://github.com/aerki-space/dronecan-dsdl/actions/workflows/ci.yml)
 
+![Wire layout of every aerki message, with size and CAN frame counts](docs/img/layout.png)
+
 ## Types
 
 | Type | ID | Purpose |
@@ -16,6 +18,16 @@ One source of truth, validated against the full DroneCAN ecosystem on every comm
 | `aerki.sensor.Hotspot` | 20411 | A thermal hotspot already projected to the ground, with uncertainty and confidence |
 
 Full field-by-field definitions: [docs/types.md](docs/types.md) (generated from the sources).
+
+## Designed for the bus
+
+- **Compact numbers:** measurements are `float16`, which keeps every sensor message in a single CAN FD frame.
+  Positions use `int32` degrees × 10⁷ (about 1 cm), the same convention as MAVLink positions.
+- **One message, one observation:** a hotspot or an air sample travels with its own timestamp and uncertainty, so a
+  receiver never has to pair messages up.
+- **Radar sized for CAN FD:** a full 16-target frame is 3 CAN FD frames, against 26 on classic CAN. At 20 Hz that's
+  about 1 % of a CAN FD bus (see the
+  [flight controller's bus-load study](https://github.com/aerki-space/AI-Flight-Controller#bus-load)).
 
 ## What's checked on every commit
 
@@ -32,6 +44,7 @@ Full field-by-field definitions: [docs/types.md](docs/types.md) (generated from 
 pip install -r requirements.txt
 python3 tools/validate.py                 # IDs, sizes, signatures
 python3 -m unittest discover -s tests     # round trips
+pip install matplotlib && python3 tools/plot_layout.py   # redraw docs/img/layout.png
 ```
 
 Integration with ArduPilot, PX4, the DroneCAN GUI tool, Python and C firmware: [docs/usage.md](docs/usage.md).
@@ -43,7 +56,7 @@ aerki/
   radar/     radar messages and services
   sensor/    payload sensor messages
 docs/        ID allocation, usage, generated type reference
-tools/       validate.py, gen_docs.py
+tools/       validate.py, gen_docs.py, plot_layout.py
 tests/       round-trip and rule checks
 ```
 

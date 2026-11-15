@@ -19,3 +19,7 @@ jobs:
         run: python tools/gen_docs.py --check
       - name: Round-trip every type through real CAN frames
         run: python -m unittest discover -s tests -v
+      - name: Layout figure builds
+        run: |
+          pip install matplotlib
+          python tools/plot_layout.py
