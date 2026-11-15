@@ -1,0 +1,21 @@
+name: DSDL checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Parse, check ID ranges and collisions
+        run: python tools/validate.py
+      - name: Generated docs are current
+        run: python tools/gen_docs.py --check
+      - name: Round-trip every type through real CAN frames
+        run: python -m unittest discover -s tests -v

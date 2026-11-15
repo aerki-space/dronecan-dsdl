@@ -1,0 +1,16 @@
+#
+# Thermal hotspot reported by an onboard thermal camera or the edge-perception computer,
+# already projected to the ground (WGS-84). One message per confirmed hotspot track.
+# Vendor-specific message: data type ID in the DroneCAN vendor range (20000-21999).
+#
+
+uavcan.Timestamp timestamp  # time of the observation the estimate is based on
+uint16 track_id             # stable while the hotspot stays tracked; wraps
+
+int32 latitude_deg_1e7      # degrees * 1e7
+int32 longitude_deg_1e7     # degrees * 1e7
+float16 position_error      # m, 1-sigma horizontal uncertainty of the ground projection
+
+float16 peak_temperature    # degC, apparent (uncorrected for emissivity)
+float16 area                # m^2, estimated footprint on the ground
+float16 confidence          # 0..1

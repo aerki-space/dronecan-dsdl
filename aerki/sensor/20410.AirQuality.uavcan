@@ -1,0 +1,22 @@
+#
+# Air-quality sample from an AERKI AQ payload drone.
+# Published at the sensor's measurement rate (typically 1 Hz). NaN marks a channel the payload does not fit.
+# Vendor-specific message: data type ID in the DroneCAN vendor range (20000-21999).
+#
+
+uavcan.Timestamp timestamp  # time the sample was taken (end of the averaging window)
+uint8 sensor_id             # distinguishes several AQ payloads on one bus
+
+float16 pm1_0               # ug/m^3
+float16 pm2_5               # ug/m^3
+float16 pm10                # ug/m^3
+float16 co                  # ppm, carbon monoxide
+float16 co2                 # ppm, carbon dioxide
+float16 voc_index           # 1..500, relative volatile-organic-compound index
+float16 temperature         # degC, sample air
+float16 humidity            # %RH, sample air
+
+uint8 STATUS_OK          = 0
+uint8 STATUS_WARMING_UP  = 1  # gas sensors not yet stable; values present but unreliable
+uint8 STATUS_DEGRADED    = 2  # a channel out of calibration range
+uint8 status
